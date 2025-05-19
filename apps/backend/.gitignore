@@ -1,2 +1,6 @@
-git add apps/backend
-git commit -m "Properly integrate backend into monorepo" 
+.encore
+encore.gen.go
+encore.gen.cue
+/.encore
+node_modules
+/encore.gen

@@ -71,3 +71,49 @@ export interface ValidationResult {
   isValid: boolean;
   message?: string;
 }
+
+export interface SearchResponse {
+  deals: Deal[];
+  total: number;
+  filters: FilterCriteria;
+}
+
+export interface DealsResponse {
+  deals: Deal[];
+  message?: string;
+}
+
+export interface CategoriesResponse {
+  categories: Category[];
+}
+
+// Define request parameters interface for listDeals
+export interface DealsRequestParams {
+  search?: string;
+  sortBy?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  categories?: string;
+  subcategories?: string;
+  latitude?: string;
+  longitude?: string;
+  radius?: string;
+}
+
+// Define a type for user location parameters
+export interface UserLocation {
+  latitude: number | null;
+  longitude: number | null;
+  radius: number;
+}
+
+// Define an interface for the intermediate category mapping
+export interface CategoryMapping {
+  name: string;
+  subcategories: Set<SubcategoryItem>;
+}
+
+// Define subcategory item interface
+export interface SubcategoryItem {
+  name: string;
+}
