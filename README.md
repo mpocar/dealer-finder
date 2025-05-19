@@ -1,84 +1,96 @@
-# Turborepo starter
+# Dealer Finder
 
-This Turborepo starter is maintained by the Turborepo core team.
+A monorepo containing both the frontend and backend applications for the Dealer Finder project.
 
-## Using this example
+## Project Structure
 
-Run the following command:
+This monorepo is built with Turborepo and includes:
+
+- **Frontend**: Next.js application in `apps/frontend`
+- **Backend**: Encore TypeScript API in `apps/backend`
+- **Shared packages**:
+  - `packages/db`: Database models and utilities
+  - `packages/ui`: Shared UI components
+  - `packages/typescript-config`: Shared TypeScript configurations
+  - `packages/eslint-config`: Shared ESLint configurations
+
+## Prerequisites
+
+- Node.js >= 18
+- npm >= 10.2.3
+- [Encore CLI](https://encore.dev/docs/install) (for backend development)
+
+## Getting Started
+
+1. Clone the repository:
+
+   ```sh
+   git clone <repository-url>
+   cd dealer-finder
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm install
+   ```
+
+3. Install the Encore CLI (if not already installed):
+   ```sh
+   curl -L https://encore.dev/install.sh | bash
+   ```
+
+## Development
+
+Run the entire application (both frontend and backend) with a single command:
 
 ```sh
-npx create-turbo@latest
+npm run dev
 ```
 
-## What's inside?
+This will start:
 
-This Turborepo includes the following packages/apps:
+- The frontend application (typically on http://localhost:3000)
+- The backend Encore API service
 
-### Apps and Packages
+### Running Individual Apps
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+If needed, you can run individual applications:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+```sh
+# Run only the frontend
+cd apps/frontend
+npm run dev
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+# Run only the backend
+cd apps/backend
+npm run dev  # or 'encore run'
 ```
 
-### Develop
+## Building for Production
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
+```sh
+npm run build
 ```
 
-### Remote Caching
+## Other Commands
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+```sh
+# Lint all applications and packages
+npm run lint
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+# Type checking
+npm run check-types
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
+# Run tests
+npm run test
 ```
-cd my-turborepo
+
+## Using Vercel Remote Caching (Optional)
+
+To enable Remote Caching:
+
+```sh
 npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
 npx turbo link
 ```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
