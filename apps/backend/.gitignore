@@ -1,0 +1,2 @@
+git add apps/backend
+git commit -m "Properly integrate backend into monorepo" 
