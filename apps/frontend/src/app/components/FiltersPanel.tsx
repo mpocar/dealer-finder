@@ -422,64 +422,67 @@ export const FiltersPanel = ({
       <div className="relative">
         <h3 className="font-medium mb-2 text-gray-300">Categories</h3>
         <div className="flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <div
-              key={category.category.name}
-              className="relative group mb-2"
-              style={{ zIndex: 50 }}
-            >
-              <button
-                onClick={() => handleCategoryChange(category.category.name)}
-                className={`px-3 py-1.5 rounded-md text-sm transition-colors h-[2.5rem] ${
-                  filters.categories.some(
-                    (c) => c.category.name === category.category.name
-                  )
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white"
-                }`}
+          {categories &&
+            categories.map((category) => (
+              <div
+                key={category.category.name}
+                className="relative group mb-2"
+                style={{ zIndex: 50 }}
               >
-                {category.category.name}
-                {category.subcategories.length > 0 && (
-                  <span className="ml-1.5 text-xs opacity-70">▼</span>
-                )}
-              </button>
-
-              {/* Subcategory dropdown */}
-              {category.subcategories.length > 0 && (
-                <div
-                  className="absolute hidden left-0 pt-2 w-48 group-hover:block"
-                  style={{ zIndex: 100 }}
+                <button
+                  onClick={() => handleCategoryChange(category.category.name)}
+                  className={`px-3 py-1.5 rounded-md text-sm transition-colors h-[2.5rem] ${
+                    filters.categories.some(
+                      (c) => c.category.name === category.category.name
+                    )
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  }`}
                 >
-                  <div className="bg-gray-800 border border-gray-700 rounded shadow-lg overflow-hidden">
-                    {category.subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory.name}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSubcategoryChange(
-                            category.category.name,
+                  {category.category.name}
+                  {category.subcategories.length > 0 && (
+                    <span className="ml-1.5 text-xs opacity-70">▼</span>
+                  )}
+                </button>
+
+                {/* Subcategory dropdown */}
+                {category.subcategories.length > 0 && (
+                  <div
+                    className="absolute hidden left-0 pt-2 w-48 group-hover:block"
+                    style={{ zIndex: 100 }}
+                  >
+                    <div className="bg-gray-800 border border-gray-700 rounded shadow-lg overflow-hidden">
+                      {category.subcategories.map((subcategory) => (
+                        <button
+                          key={subcategory.name}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSubcategoryChange(
+                              category.category.name,
+                              subcategory.name
+                            );
+                          }}
+                          className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-700 ${
+                            filters.selectedSubcategories.includes(
+                              subcategory.name
+                            )
+                              ? "bg-indigo-600/60 text-white"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          {subcategory.name}
+                          {filters.selectedSubcategories.includes(
                             subcategory.name
-                          );
-                        }}
-                        className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-700 ${
-                          filters.selectedSubcategories.includes(
-                            subcategory.name
-                          )
-                            ? "bg-indigo-600/60 text-white"
-                            : "text-gray-300"
-                        }`}
-                      >
-                        {subcategory.name}
-                        {filters.selectedSubcategories.includes(
-                          subcategory.name
-                        ) && <span className="float-right text-white">✓</span>}
-                      </button>
-                    ))}
+                          ) && (
+                            <span className="float-right text-white">✓</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            ))}
         </div>
       </div>
 
@@ -529,6 +532,7 @@ export const FiltersPanel = ({
 
             {/* Display selected subcategories */}
             {filters.selectedSubcategories.length > 0 &&
+              categories &&
               categories.map((cat) => {
                 const selectedSubs = cat.subcategories.filter((sub) =>
                   filters.selectedSubcategories.includes(sub.name)
