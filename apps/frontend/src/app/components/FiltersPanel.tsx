@@ -65,7 +65,7 @@ export const FiltersPanel = ({
       filters.maxPrice !== null ? filters.maxPrice.toString() : ""
     );
     setRadiusInput(filters.radius);
-  }, []);
+  }, [filters.search, filters.minPrice, filters.maxPrice, filters.radius]);
 
   // Get user's location
   const getUserLocation = () => {
@@ -243,7 +243,7 @@ export const FiltersPanel = ({
       ];
 
       // Also ensure the parent category is selected
-      let newCategories = [...filters.categories];
+      const newCategories = [...filters.categories];
       if (!newCategories.some((c) => c.category.name === categoryName)) {
         newCategories.push(categoryObj);
       }
