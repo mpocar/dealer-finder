@@ -66,6 +66,13 @@ export const VALID_SORT_OPTIONS = [
   "rating-high-low",
 ];
 
+export type SortOption =
+  | "recommended"
+  | "price-low-high"
+  | "price-high-low"
+  | "discount-high-low"
+  | "rating-high-low";
+
 // Input validation interface
 export interface ValidationResult {
   isValid: boolean;
@@ -116,4 +123,37 @@ export interface CategoryMapping {
 // Define subcategory item interface
 export interface SubcategoryItem {
   name: string;
+}
+
+export interface UseDealsDataProps {
+  filters: FilterOptions;
+}
+
+export interface UseDealsDataResult {
+  deals: Deal[];
+  categories: Category[];
+  loading: boolean;
+  loadingCategories: boolean;
+  errorMessage: string | null;
+}
+
+// Extended FilterOptions to support subcategories and location
+export interface FilterOptions {
+  search: string;
+  categories: Category[];
+  selectedSubcategories: string[]; // Store selected subcategory names
+  minPrice: number | null;
+  maxPrice: number | null;
+  sortBy: SortOption;
+  // Location filtering
+  useLocation: boolean;
+  userLocation: { lat: number; lng: number } | null;
+  radius: number;
+}
+
+export interface FiltersPanelProps {
+  onFilterChange: (filters: FilterOptions) => void;
+  categories: Category[];
+  isLocating?: boolean;
+  locationError?: string | null;
 }

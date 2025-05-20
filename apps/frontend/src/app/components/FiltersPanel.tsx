@@ -1,35 +1,16 @@
-import { Category } from "@repo/db-mock";
+import {
+  Category,
+  FilterOptions,
+  FiltersPanelProps,
+  SortOption,
+} from "@repo/db-mock";
 import { useState, useEffect, useRef } from "react";
-
-export type SortOption =
-  | "recommended"
-  | "price-low-high"
-  | "price-high-low"
-  | "discount-high-low"
-  | "rating-high-low";
-
-// Extended FilterOptions to support subcategories and location
-export interface FilterOptions {
-  search: string;
-  categories: Category[];
-  selectedSubcategories: string[]; // Store selected subcategory names
-  minPrice: number | null;
-  maxPrice: number | null;
-  sortBy: SortOption;
-  // Location filtering
-  useLocation: boolean;
-  userLocation: { lat: number; lng: number } | null;
-  radius: number;
-}
-
-interface FiltersPanelProps {
-  onFilterChange: (filters: FilterOptions) => void;
-  categories: Category[];
-}
 
 export const FiltersPanel = ({
   onFilterChange,
   categories,
+  isLocating = false,
+  locationError: externalLocationError = null,
 }: FiltersPanelProps) => {
   const [filters, setFilters] = useState<FilterOptions>({
     search: "",
@@ -38,7 +19,6 @@ export const FiltersPanel = ({
     minPrice: null,
     maxPrice: null,
     sortBy: "recommended",
-    // Initialize location filtering options
     useLocation: false,
     userLocation: null,
     radius: 10, // Default radius in miles
@@ -49,7 +29,12 @@ export const FiltersPanel = ({
   const [minPriceInput, setMinPriceInput] = useState<string>("");
   const [maxPriceInput, setMaxPriceInput] = useState<string>("");
   const [radiusInput, setRadiusInput] = useState<number>(10);
-  const [locationError, setLocationError] = useState<string | null>(null);
+  const [internalLocationError, setInternalLocationError] = useState<
+    string | null
+  >(null);
+
+  // Use either external or internal location error
+  const locationErrorToShow = externalLocationError || internalLocationError;
 
   const searchDebounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const priceDebounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -70,11 +55,11 @@ export const FiltersPanel = ({
   // Get user's location
   const getUserLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError("Geolocation is not supported by your browser");
+      setInternalLocationError("Geolocation is not supported by your browser");
       return;
     }
 
-    setLocationError(null);
+    setInternalLocationError(null);
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const newLocation = {
@@ -90,11 +75,13 @@ export const FiltersPanel = ({
 
         setFilters(newFilters);
         onFilterChange(newFilters);
-        setLocationError(null);
+        setInternalLocationError(null);
       },
       (error) => {
         console.error("Error getting location:", error);
-        setLocationError(`Unable to get your location: ${error.message}`);
+        setInternalLocationError(
+          `Unable to get your location: ${error.message}`
+        );
 
         // Turn off location filtering if we can't get the location
         const newFilters = {
@@ -358,10 +345,36 @@ export const FiltersPanel = ({
               id="useLocation"
               checked={filters.useLocation}
               onChange={handleLocationToggle}
+              disabled={isLocating}
               className="mr-2 h-4 w-4 rounded border-gray-700 bg-gray-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-gray-800"
             />
             <label htmlFor="useLocation" className="text-sm text-gray-300">
               Show deals near my location
+              {isLocating && (
+                <span className="ml-2 text-blue-400 text-xs inline-flex items-center">
+                  <svg
+                    className="animate-spin h-3 w-3 mr-1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Getting location...
+                </span>
+              )}
             </label>
           </div>
 
@@ -384,8 +397,10 @@ export const FiltersPanel = ({
                 </span>
               </div>
 
-              {locationError && (
-                <div className="mt-2 text-red-400 text-xs">{locationError}</div>
+              {locationErrorToShow && (
+                <div className="mt-2 text-red-400 text-xs">
+                  {locationErrorToShow}
+                </div>
               )}
 
               {filters.userLocation && (
